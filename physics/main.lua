@@ -16,13 +16,21 @@ function love.load()
 	  ball.f:setRestitution(0.99) -- bouncy
 	  ball.f:setUserData("Ball") -- accessible name
 
+	NPCball = {}
+	  NPCball.b = love.physics.newBody(world, 500, 0, "dynamic")
+	  NPCball.b:setMass(10)
+	  NPCball.s = love.physics.newCircleShape(50)
+	  NPCball.f = love.physics.newFixture(NPCball.b, NPCball.s)
+	  NPCball.f:setRestitution(0.99)
+	  NPCball.f:setUserData("NPCBall")
+
 	static = {}
 	  static.b = love.physics.newBody(world, 400, 400, "static") -- cannot be acted on
 	  static.s = love.physics.newRectangleShape(200, 50) -- size
 	  static.f = love.physics.newFixture(static.b, static.s)
 	  static.f:setUserData("Block")
 
-    ropeJoint = love.physics.newRopeJoint(ball.b, static.b, 0, 0, 0, 0, 10, true)
+    distanceJoint = love.physics.newMotorJoint(ball.b, NPCball.b, 0.2)
 
 end
 
@@ -49,6 +57,7 @@ end
 
 function love.draw()
 	love.graphics.circle(circlePattern, ball.b:getX(), ball.b:getY(), ball.s:getRadius(), 20)
+	love.graphics.circle("line", NPCball.b:getX(), NPCball.b:getY(), NPCball.s:getRadius(), 20)
 	love.graphics.polygon("line", static.b:getWorldPoints(static.s:getPoints()))
 
 	love.graphics.print(text, 10, 10)
